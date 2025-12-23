@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaveri APPLIANCES | India</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. CSS VARIABLES & RESET
+           ========================================= */
+        :root {
+            --primary-red: #D6001C; 
+            --dark-bg: #0a0a0a;
+            --card-bg: #141414;
+            --text-white: #ffffff;
+            --text-gray: #b3b3b3;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.8);
+            --shadow-red-glow: 0 0 20px rgba(214, 0, 28, 0.4);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* =========================================
+           2. NAVIGATION
+           ========================================= */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(10, 10, 10, 0.95);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--text-white); cursor: pointer; }
+        .logo span { color: var(--primary-red); }
+
+        .cart-btn {
+            background: transparent;
+            border: 2px solid var(--text-white);
+            color: var(--text-white);
+            padding: 8px 20px;
+            font-weight: bold;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .cart-btn:hover {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            box-shadow: var(--shadow-red-glow);
+        }
+
+        #cart-count {
+            background: var(--primary-red);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+
+        /* =========================================
+           3. HOME VIEW (HERO & CATEGORIES)
+           ========================================= */
+        .view-section {
+            padding-top: 80px; /* Space for fixed nav */
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .hero {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Category Cards */
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            height: 300px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #333;
+            transition: var(--transition);
+        }
+
+        .category-card:hover {
+            transform: scale(1.03);
+            border-color: var(--primary-red);
+            box-shadow: var(--shadow-red-glow);
+        }
+
+        .category-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            opacity: 0.6;
+        }
+
+        .category-card:hover .category-bg {
+            transform: scale(1.1);
+            opacity: 0.4;
+        }
+
+        .category-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px black;
+            z-index: 2;
+        }
+
+        /* =========================================
+           4. PRODUCT LISTING VIEW
+           ========================================= */
+        .product-header {
+            max-width: 1200px;
+            margin: 40px auto 20px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: var(--text-gray);
+            border: 1px solid var(--text-gray);
+            padding: 10px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            color: white;
+            border-color: white;
+        }
+
+        /* Filter Controls */
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-select {
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .product-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        /* Product Card Styling */
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            transition: var(--transition);
+            border: 1px solid #222;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-red);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            background-color: #222; 
+        }
+
+        .brand-tag {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .product-name { font-size: 1.3rem; margin-bottom: 10px; }
+        
+        .product-price { 
+            color: var(--primary-red); 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            display: block; 
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--text-white);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn-add:hover { background: var(--text-white); color: black; }
+
+        /* =========================================
+           5. CART & FOOTER (Shared)
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .checkout-form { display: flex; flex-direction: column; gap: 15px; margin-top: 20px;}
+        .form-group input { width: 100%; padding: 12px; background: #0f0f0f; border: 1px solid #333; color: white; }
+        .form-submit-btn { background: var(--primary-red); color: white; padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+
+        footer {
+            background: #050505;
+            padding: 40px 20px;
+            margin-top: 50px;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="showHome()">Kaveri<span>APPLIANCES</span></div>
+        <div class="nav-icons">
+            <button class="cart-btn" onclick="toggleCart()">
+                CART <span id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <section id="home-view" class="view-section">
+        <div class="hero">
+            <h1>Upgrade Your Home</h1>
+            <p style="color: #ccc; margin-bottom: 20px;">Select a category below to browse our premium collection.</p>
+        </div>
+
+        <div class="category-container">
+            <div class="category-card" onclick="loadCategory('fan')">
+                <img src="https://placehold.co/600x400/111/D6001C?text=PREMIUM+FANS" class="category-bg" alt="Fans">
+                <div class="category-title">FANS</div>
+            </div>
+
+            <div class="category-card" onclick="loadCategory('mixer')">
+                <img src="https://placehold.co/600x400/111/D6001C?text=MIXER+GRINDERS" class="category-bg" alt="Mixers">
+                <div class="category-title">MIXERS</div>
+            </div>
+
+            <div class="category-card" onclick="loadCategory('light')">
+                <img src="https://placehold.co/600x400/111/D6001C?text=SMART+LIGHTING" class="category-bg" alt="Lights">
+                <div class="category-title">LIGHTS</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="product-view" class="view-section hidden">
+        <div class="product-header">
+            <div>
+                <button class="back-btn" onclick="showHome()">← Back to Categories</button>
+                <h2 id="page-title" style="margin-top: 20px;">Category Name</h2>
+            </div>
+
+            <div class="filter-group">
+                <label for="brand-filter" style="color:#aaa; font-weight:500;">FILTER BY BRAND:</label>
+                <select id="brand-filter" class="filter-select" onchange="applyFilter()">
+                    <option value="all">All Brands</option>
+                    </select>
+            </div>
+        </div>
+
+        <div class="product-grid" id="product-grid">
+            </div>
+    </section>
+
+    <div class="modal-overlay" id="cart-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">Your Cart</h3>
+            <div id="cart-items-container"></div>
+            <div class="cart-total" style="text-align:right; font-size:1.2rem; font-weight:bold; color: var(--primary-red); margin: 20px 0;">
+                Total: ₹<span id="total-price">0.00</span>
+            </div>
+            
+            <form class="checkout-form" id="checkout-form">
+                <h4>Checkout Details</h4>
+                <div class="form-group"><input type="text" name="name" placeholder="Full Name" required></div>
+                <div class="form-group"><input type="tel" name="phone" placeholder="Phone Number" required></div>
+                <button type="submit" class="form-submit-btn">Place Order via WhatsApp/Email</button>
+            </form>
+            <button onclick="toggleCart()" style="background:none; border:none; color:#777; width:100%; margin-top:10px; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>kaveri APPLIANCES INDIA</strong></p>
+        <p style="font-size: 0.9rem; color: #777;">Authorized Dealer: Crompton, Philips, Bajaj, Havells</p>
+        <p style="font-size: 0.8rem; color: #555; margin-top:10px;">© 2024 All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        /* =========================================
+           1. PRODUCT DATABASE
+           Sorted by Categories: 'fan', 'mixer', 'light'
+           ========================================= */
+        const products = [
+            // --- FANS ---
+            { id: 101, category: 'fan', brand: 'Crompton', name: "Crompton Silent Pro", price: 3500, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Crompton+Silent" },
+            { id: 102, category: 'fan', brand: 'Lala', name: "Lala High Speed", price: 1800, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Lala+Fan" },
+            { id: 103, category: 'fan', brand: 'Kaveri', name: "Kaveri Deco Breeze", price: 2200, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Kaveri+Fan" },
+            { id: 104, category: 'fan', brand: 'Havells', name: "Havells Stealth Air", price: 4200, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Havells+Stealth" },
+            { id: 105, category: 'fan', brand: 'Crompton', name: "Crompton Aura", price: 2900, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Crompton+Aura" },
+            
+            // --- MIXERS ---
+            { id: 201, category: 'mixer', brand: 'Prestige', name: "Prestige Delight 750W", price: 3200, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Prestige+Mixer" },
+            { id: 202, category: 'mixer', brand: 'Bajaj', name: "Bajaj Rex Mixer", price: 2500, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Bajaj+Rex" },
+            { id: 203, category: 'mixer', brand: 'Philips', name: "Philips Hl7756", price: 4100, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Philips+Pro" },
+            { id: 204, category: 'mixer', brand: 'Lala', name: "Lala Grinder Mate", price: 1500, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Lala+Grinder" },
+
+            // --- LIGHTS ---
+            { id: 301, category: 'light', brand: 'Philips', name: "Philips Smart Wi-Fi Bulb", price: 899, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Philips+Smart" },
+            { id: 302, category: 'light', brand: 'Wipro', name: "Wipro Garnet Batten", price: 450, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Wipro+Light" },
+            { id: 303, category: 'light', brand: 'Crompton', name: "Crompton LED Panel", price: 650, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Crompton+LED" },
+            { id: 304, category: 'light', brand: 'Syska', name: "Syska Emergency Bulb", price: 550, image: "https://placehold.co/400x300/1a1a1a/D6001C?text=Syska+Bulb" }
+        ];
+
+        /* =========================================
+           2. NAVIGATION & DISPLAY LOGIC
+           ========================================= */
+        const homeView = document.getElementById('home-view');
+        const productView = document.getElementById('product-view');
+        const productGrid = document.getElementById('product-grid');
+        const pageTitle = document.getElementById('page-title');
+        const brandFilter = document.getElementById('brand-filter');
+
+        let currentCategory = '';
+
+        function showHome() {
+            productView.classList.add('hidden');
+            homeView.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function loadCategory(category) {
+            currentCategory = category;
+            
+            // 1. Hide Home, Show Products
+            homeView.classList.add('hidden');
+            productView.classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // 2. Set Title
+            pageTitle.innerText = category.toUpperCase() + " COLLECTION";
+
+            // 3. Populate Brand Dropdown specific to this category
+            updateBrandDropdown(category);
+
+            // 4. Render Products
+            renderFilteredProducts(category, 'all');
+        }
+
+        function updateBrandDropdown(category) {
+            // Get unique brands for this category
+            const categoryItems = products.filter(p => p.category === category);
+            const brands = [...new Set(categoryItems.map(p => p.brand))];
+            
+            // Reset and populate dropdown
+            brandFilter.innerHTML = '<option value="all">All Brands</option>';
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.innerText = brand;
+                brandFilter.appendChild(option);
+            });
+        }
+
+        function applyFilter() {
+            const selectedBrand = brandFilter.value;
+            renderFilteredProducts(currentCategory, selectedBrand);
+        }
+
+        function renderFilteredProducts(category, brand) {
+            // Filter logic
+            const filteredItems = products.filter(p => {
+                return p.category === category && (brand === 'all' || p.brand === brand);
+            });
+
+            // HTML Generation
+            if (filteredItems.length === 0) {
+                productGrid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#777;">No products found for this filter.</p>';
+            } else {
+                productGrid.innerHTML = filteredItems.map(p => `
+                    <div class="product-card">
+                        <img src="${p.image}" alt="${p.name}" class="product-img">
+                        <span class="brand-tag">${p.brand}</span>
+                        <h3 class="product-name">${p.name}</h3>
+                        <span class="product-price">₹${p.price.toLocaleString('en-IN')}</span>
+                        <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        /* =========================================
+           3. CART LOGIC
+           ========================================= */
+        let cart = [];
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            if(existing) existing.quantity++;
+            else cart.push({...product, quantity: 1});
+            
+            updateCartUI();
+            alert("Added to cart: " + product.name);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('total-price');
+            const countEl = document.getElementById('cart-count');
+
+            countEl.innerText = cart.reduce((sum, i) => sum + i.quantity, 0);
+
+            if(cart.length === 0) {
+                container.innerHTML = "<p style='color:#777; text-align:center;'>Empty Cart</p>";
+                totalEl.innerText = "0.00";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.quantity;
+                return `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px;">
+                    <div>${item.name} <br> <span style="font-size:0.8rem; color:#888;">₹${item.price} x ${item.quantity}</span></div>
+                    <button onclick="removeFromCart(${item.id})" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
+                </div>`;
+            }).join('');
+            
+            totalEl.innerText = total.toLocaleString('en-IN');
+        }
+
+        /* =========================================
+           4. MODAL & UTILS
+           ========================================= */
+        const modal = document.getElementById('cart-modal');
+        function toggleCart() {
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+        window.onclick = function(e) { if(e.target == modal) toggleCart(); }
+
+        // Checkout Placeholder
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert("Order Placed! Total: ₹" + document.getElementById('total-price').innerText);
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        });
+
+    </script>
+</body>
+</html>
